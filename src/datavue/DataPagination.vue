@@ -55,6 +55,7 @@
 </template>
 
 <script>
+  import { addToHistory, getFromHistory } from './utils'
   export default {
     props: {
       totalRows: {
@@ -113,8 +114,8 @@
     emits: ['update:modelValue'],
     watch: {
       currentPage(val) {
-        console.log('data berubah ', val)
         this.$emit('update:modelValue', val)
+        addToHistory('page', val)
       },
     },
     methods: {

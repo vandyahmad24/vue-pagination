@@ -47,30 +47,14 @@
     </div>
 
     <div class="card-footer">
-      <div class="row align-item-center">
-        <div class="col-md-3">
-          <data-per-page
-            :total-rows="records.length"
-            v-model="localPerPage"
-          ></data-per-page>
-        </div>
-        <div class="col-md-4">
-          <data-record-meta
-            :total-rows="records.length"
-            :per-page="localPerPage"
-            :currentPage="currentPage"
-          ></data-record-meta>
-        </div>
-        <div class="col-md-5">
-          <data-pagination
-            :total-rows="records.length"
-            :per-page="localPerPage"
-            v-model="currentPage"
-            position="center"
-            :type="pagination"
-          ></data-pagination>
-        </div>
-      </div>
+      <data-footer-control
+        v-model:per-page="localPerPage"
+        v-model:current-page="currentPage"
+        :pagination="pagination"
+        :total-rows="records.length"
+      >
+        ></data-footer-control
+      >
     </div>
   </div>
 </template>
@@ -80,13 +64,12 @@
   import DataPagination from './DataPagination.vue'
   import DataPerPage from './DataPerPage.vue'
   import DataRecordMeta from './DataRecordMeta.vue'
-  import { getArrayIndexes } from './utils'
+  import DataFooterControl from './DataFooterControl.vue'
+  import { getArrayIndexes, getFromHistory } from './utils'
   export default {
     components: {
       DataSearch,
-      DataPagination,
-      DataPerPage,
-      DataRecordMeta,
+      DataFooterControl,
     },
     props: {
       searchKey: {
@@ -190,7 +173,12 @@
     },
     mounted() {
       this.fetchData()
+
+      window.onpopstate = () => {
+        this.currentPage = getFromHistory('page', 1)
+      }
     },
+
     data() {
       return {
         records: [],
@@ -200,8 +188,8 @@
           dir: 1,
           by: this.sortKey,
         },
-        currentPage: 1,
-        localPerPage: this.perPage,
+        currentPage: getFromHistory('page', 1),
+        localPerPage: getFromHistory('per_page', 1),
         firstItem: 1,
         checkedItems: new Set(),
       }

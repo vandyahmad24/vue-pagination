@@ -130,6 +130,7 @@
               (product) => product.id == item.id
             )
             this.products.splice(index, 1)
+            items.clear()
           })
         }
       },

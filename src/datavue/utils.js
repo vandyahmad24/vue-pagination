@@ -5,3 +5,17 @@ export const getArrayIndexes = (length, limit, offet) => {
 
   return { from, to }
 }
+
+const getParams = () => new URLSearchParams(window.location.search)
+
+export const addToHistory = (key, value) => {
+  let params = getParams()
+  params.set(key, value)
+  history.pushState({}, '', `?${params.toString()}`)
+}
+
+export const getFromHistory = (val, defaultValue = null) => {
+  let params = getParams()
+  let value = params.has(val) ? params.get(val) : defaultValue
+  return isNaN(value) ? value : parseInt(value)
+}

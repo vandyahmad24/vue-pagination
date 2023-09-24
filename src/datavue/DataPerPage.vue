@@ -3,7 +3,7 @@
     <label>Show</label>
     <select
       :value="modelValue"
-      @change="$emit('update:modelValue', parseInt($event.target.value))"
+      @change="handleChange"
       class="form-control custom-select mr-1 ml-1"
       style="width: 70px"
     >
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+  import { addToHistory } from './utils'
   export default {
     props: {
       totalRows: {
@@ -43,6 +44,13 @@
         // localPerPage: this.modelValue,
         limit: this.modelValue,
       }
+    },
+    methods: {
+      handleChange(event) {
+        let value = parseInt(event.target.value)
+        this.$emit('update:modelValue', value)
+        addToHistory('per_page', value)
+      },
     },
     // watch: {
     //   localPerPage(value) {
