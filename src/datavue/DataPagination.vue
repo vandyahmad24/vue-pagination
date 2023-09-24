@@ -18,7 +18,7 @@
         <a class="page-link" href="#" @click.prevent="next()">Next</a>
       </li>
     </ul>
-    <div v-else class="row">
+    <div v-else class="row align-items-center">
       <div class="col-md-6">
         <label>Page</label>
         <select

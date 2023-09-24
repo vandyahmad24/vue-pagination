@@ -5,7 +5,10 @@
     </div>
     <div class="card-body">
       <div class="row mb-3">
-        <div class="col-md-12">
+        <div class="col-md-6">
+          <slot name="actionBar" :checkedItems="checkedItems"></slot>
+        </div>
+        <div class="col-md-6">
           <div class="form-inline justify-content-end">
             <div class="form-group">
               <data-search v-model="searchTerm"></data-search>
@@ -23,13 +26,21 @@
 
       <table v-else class="table table-striped table-hover">
         <thead>
-          <slot name="head" :sort="sortMethod" :sortable="sortable"></slot>
+          <slot
+            name="head"
+            :sort="sortMethod"
+            :sortable="sortable"
+            :checkAll="checkAll"
+            :isCheckedAll="isCheckedAll"
+          ></slot>
         </thead>
         <tbody>
           <slot
             name="data"
             :records="recordsPagination"
             :firstItem="firstItem"
+            :isChecked="isChecked"
+            :checkItem="checkItem"
           ></slot>
         </tbody>
       </table>
@@ -43,14 +54,14 @@
             v-model="localPerPage"
           ></data-per-page>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <data-record-meta
             :total-rows="records.length"
             :per-page="localPerPage"
             :currentPage="currentPage"
           ></data-record-meta>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
           <data-pagination
             :total-rows="records.length"
             :per-page="localPerPage"
@@ -134,21 +145,14 @@
         this.firstItem = from + 1
         return this.recordsSorted.slice(from, to + 1)
       },
+      isCheckedAll() {
+        return (
+          this.recordsPagination &&
+          this.recordsPagination.length === this.checkedItems.size
+        )
+      },
     },
-    data() {
-      return {
-        records: [],
-        searchTerm: '',
-        isSearching: false,
-        sort: {
-          dir: 1,
-          by: this.sortKey,
-        },
-        currentPage: 1,
-        localPerPage: this.perPage,
-        firstItem: 1,
-      }
-    },
+
     methods: {
       sortMethod(column) {
         this.sort.by = column
@@ -162,9 +166,45 @@
           this.records = this.source
         }
       },
+      checkAll(e) {
+        if (e.target.checked) {
+          this.recordsPagination.forEach((record) =>
+            this.checkedItems.add(record)
+          )
+        } else {
+          this.checkedItems.clear()
+        }
+        console.log('check all ', this.checkedItems.size)
+      },
+      isChecked(record) {
+        return this.checkedItems.has(record)
+      },
+      checkItem(record) {
+        if (this.isChecked(record)) {
+          this.checkedItems.delete(record)
+        } else {
+          this.checkedItems.add(record)
+        }
+        console.log('checkItem ', this.checkedItems.size)
+      },
     },
     mounted() {
       this.fetchData()
+    },
+    data() {
+      return {
+        records: [],
+        searchTerm: '',
+        isSearching: false,
+        sort: {
+          dir: 1,
+          by: this.sortKey,
+        },
+        currentPage: 1,
+        localPerPage: this.perPage,
+        firstItem: 1,
+        checkedItems: new Set(),
+      }
     },
   }
 </script>
