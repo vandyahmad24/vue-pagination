@@ -12,6 +12,7 @@
       </template>
       <template v-slot:head="{ sort, sortable }">
         <tr>
+          <th>No</th>
           <th :class="sortable('name')" @click="sort('name')">Name</th>
           <th :class="sortable('price')" @click="sort('price')">Price</th>
           <th :class="sortable('category')" @click="sort('category')">
@@ -19,8 +20,9 @@
           </th>
         </tr>
       </template>
-      <template v-slot:data="{ records }">
-        <tr v-for="product in records" :key="product.id">
+      <template v-slot:data="{ records, firstItem }">
+        <tr v-for="(product, index) in records" :key="product.id">
+          <td>{{ firstItem + index }}</td>
           <td>{{ product.name }}</td>
           <td>{{ product.price }}</td>
           <td>{{ product.category }}</td>

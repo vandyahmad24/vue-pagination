@@ -26,18 +26,34 @@
           <slot name="head" :sort="sortMethod" :sortable="sortable"></slot>
         </thead>
         <tbody>
-          <slot name="data" :records="recordsPagination"></slot>
+          <slot
+            name="data"
+            :records="recordsPagination"
+            :firstItem="firstItem"
+          ></slot>
         </tbody>
       </table>
     </div>
 
     <div class="card-footer">
-      <div class="row">
-        <div class="col-md-6">show 10 record</div>
+      <div class="row align-item-center">
+        <div class="col-md-3">
+          <data-per-page
+            :total-rows="records.length"
+            v-model="localPerPage"
+          ></data-per-page>
+        </div>
+        <div class="col-md-3">
+          <data-record-meta
+            :total-rows="records.length"
+            :per-page="localPerPage"
+            :currentPage="currentPage"
+          ></data-record-meta>
+        </div>
         <div class="col-md-6">
           <data-pagination
             :total-rows="records.length"
-            :per-page="perPage"
+            :per-page="localPerPage"
             v-model="currentPage"
             position="center"
             :type="pagination"
@@ -51,7 +67,16 @@
 <script>
   import DataSearch from './DataSearch.vue'
   import DataPagination from './DataPagination.vue'
+  import DataPerPage from './DataPerPage.vue'
+  import DataRecordMeta from './DataRecordMeta.vue'
+  import { getArrayIndexes } from './utils'
   export default {
+    components: {
+      DataSearch,
+      DataPagination,
+      DataPerPage,
+      DataRecordMeta,
+    },
     props: {
       searchKey: {
         type: String,
@@ -74,10 +99,7 @@
         default: 'inline',
       },
     },
-    components: {
-      DataSearch,
-      DataPagination,
-    },
+
     created() {
       console.log(this.$slots)
     },
@@ -104,13 +126,13 @@
         return this.sort.dir === 1 ? 'ascending' : 'descending'
       },
       recordsPagination() {
-        let pages = Math.ceil(this.records.length / this.perPage)
-        let form = (this.currentPage - 1) * this.perPage
-        let to =
-          (this.currentPage === pages
-            ? this.records.length
-            : form + this.perPage) - 1
-        return this.recordsSorted.slice(form, to + 1)
+        let { from, to } = getArrayIndexes(
+          this.records.length,
+          this.localPerPage,
+          this.currentPage
+        )
+        this.firstItem = from + 1
+        return this.recordsSorted.slice(from, to + 1)
       },
     },
     data() {
@@ -123,6 +145,8 @@
           by: this.sortKey,
         },
         currentPage: 1,
+        localPerPage: this.perPage,
+        firstItem: 1,
       }
     },
     methods: {
