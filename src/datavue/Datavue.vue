@@ -50,7 +50,6 @@
       <data-footer-control
         v-model:per-page="localPerPage"
         v-model:current-page="currentPage"
-        :pagination="pagination"
         :total-rows="records.length"
       >
         ></data-footer-control
@@ -61,11 +60,10 @@
 
 <script>
   import DataSearch from './DataSearch.vue'
-  import DataPagination from './DataPagination.vue'
-  import DataPerPage from './DataPerPage.vue'
-  import DataRecordMeta from './DataRecordMeta.vue'
   import DataFooterControl from './DataFooterControl.vue'
   import { getArrayIndexes, getFromHistory } from './utils'
+  import { computed } from 'vue'
+
   export default {
     components: {
       DataSearch,
@@ -179,6 +177,13 @@
       }
     },
 
+    provide() {
+      return {
+        paginationType: this.pagination,
+        totalFilteredRows: computed(() => this.records.length),
+      }
+    },
+
     data() {
       return {
         records: [],
@@ -189,7 +194,7 @@
           by: this.sortKey,
         },
         currentPage: getFromHistory('page', 1),
-        localPerPage: getFromHistory('per_page', 1),
+        localPerPage: getFromHistory('per_page', this.perPage),
         firstItem: 1,
         checkedItems: new Set(),
       }

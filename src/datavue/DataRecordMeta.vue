@@ -32,6 +32,10 @@
         return `Showing ${from + 1} to ${to + 1} of ${this.totalRows} records`
       },
     },
+    inject: ['totalFilteredRows'],
+    mounted() {
+      console.log('totalFilteredRows  ', this.totalFilteredRows)
+    },
   }
 </script>
 

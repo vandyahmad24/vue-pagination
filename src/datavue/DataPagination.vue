@@ -1,6 +1,10 @@
 <template>
   <nav>
-    <ul class="pagination" :class="positionClass" v-if="type === 'inline'">
+    <ul
+      class="pagination"
+      :class="positionClass"
+      v-if="paginationType === 'inline'"
+    >
       <li class="page-item" :class="{ disabled: isFirstPage }">
         <a class="page-link" href="#" @click.prevent="prev()">Previous</a>
       </li>
@@ -77,13 +81,13 @@
           return ['left', 'right', 'center'].indexOf(value) !== -1
         },
       },
-      type: {
-        type: String,
-        default: 'inline',
-        validator: function (value) {
-          return ['inline', 'dropdown'].indexOf(value) !== -1
-        },
-      },
+      // type: {
+      //   type: String,
+      //   default: 'inline',
+      //   validator: function (value) {
+      //     return ['inline', 'dropdown'].indexOf(value) !== -1
+      //   },
+      // },
     },
     computed: {
       pages() {
@@ -117,6 +121,10 @@
         this.$emit('update:modelValue', val)
         addToHistory('page', val)
       },
+    },
+    inject: ['paginationType'],
+    mounted() {
+      console.log('pagination type ', this.paginationType)
     },
     methods: {
       prev() {

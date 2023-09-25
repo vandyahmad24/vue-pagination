@@ -18,7 +18,6 @@
         :total-rows="totalRows"
         :per-page="localPerPage"
         position="center"
-        :type="pagination"
         v-model="localCurrentPage"
       ></data-pagination>
     </div>
@@ -43,10 +42,6 @@
       currentPage: {
         type: Number,
         default: 1,
-      },
-      pagination: {
-        type: String,
-        default: 'inline',
       },
     },
     components: {

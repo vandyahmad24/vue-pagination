@@ -5,7 +5,7 @@
       :per-page="5"
       search-key="name"
       sort-key="price"
-      pagination="dropdown"
+      pagination="inline"
     >
       <template v-slot:title>
         <h2>Product Table</h2>
